@@ -17,7 +17,7 @@ Multiple map marker and filter plugin is useful to display maps on your website 
 * Custom icons
 * Can customize infowindow by applying style to custom-infowindow class.
 * Free to use and customize.
-* Different map types like Roadmap/Sattelite/Terrain/Hybrid.
+* Different map types like Roadmap/Satellite/Terrain/Hybrid.
 
 == Screenshots ==
 1. Sample map with filter
@@ -39,10 +39,10 @@ In WordPress:
     Go to Plugins > Add New > search for :: Multiple Marker Map Filter ::
     Press Install Now for the Show notice or message on admin area plugin
     Press Activate Plugin
-	then assign tags to categories availbale in your website
+	then assign tags to categories available in your website
 
 To install manually instead:
 
     Upload the Multiple-Marker-Map-Filter  directory to the /wp-content/plugins/ directory
     Activate the plugin through the Plugins menu in WordPress
-	then assign tags to categories availbale in your website
+	then assign tags to categories available in your website
