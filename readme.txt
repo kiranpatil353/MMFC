@@ -23,6 +23,7 @@ Multiple map marker and filter plugin is useful to display maps on your website 
 1. Sample map with filter
 2. Add new marker screen 
 3. Map custom settings
+4. Custom map categories 
   
 
 == Changelog ==
