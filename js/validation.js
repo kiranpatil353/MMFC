@@ -1,4 +1,4 @@
-function validate(event,id) 
+function mf_validate(event,id) 
 	{
 		event.preventDefault();
 		form = document.getElementById("delfrm"+id);

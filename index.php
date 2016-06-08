@@ -7,13 +7,13 @@
  */
 require('settings-page-markers.php');
 // Add the google maps api to header
-add_action('wp_head', 'map_filter_header');
+add_action('wp_head', 'mf_map_filter_header');
 
 // Create custom taxonomy for map 
 
 
-add_action('init', 'map_filter_registration_of_taxonomies');
-function map_filter_registration_of_taxonomies() {
+add_action('init', 'mf_map_filter_registration_of_taxonomies');
+function mf_map_filter_registration_of_taxonomies() {
     $args = array( 
         'hierarchical' => true,
         'label' => 'Map Categories',
@@ -22,23 +22,23 @@ function map_filter_registration_of_taxonomies() {
 }
 
 
-function map_filter_header() {
+function mf_map_filter_header() {
     ?>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <?php
 }
 
 // generate script
-function map_filter_build_map($short_attribute) {
+function mf_map_filter_build_map($short_attribute) {
     $markertext = '';
     $short_attribute = shortcode_atts(array(
-        'lat' => (get_option('map_filter_initial_latitude') !='') ? sanitize_text_field(get_option('map_filter_initial_latitude')) : 0 ,
-        'lon' => (get_option('map_filter_initial_longitude') !='') ? sanitize_text_field(get_option('map_filter_initial_longitude')): 0,
+        'lat' => (get_option('mf_map_filter_initial_latitude') !='') ? sanitize_text_field(get_option('mf_map_filter_initial_latitude')) : 0 ,
+        'lon' => (get_option('mf_map_filter_initial_longitude') !='') ? sanitize_text_field(get_option('mf_map_filter_initial_longitude')): 0,
         'id' => 'map',
-        'z' => (get_option('map_filter_zoom') !='') ? sanitize_text_field(get_option('map_filter_zoom')) : 16 ,
-        'w' => (get_option('map_filter_width') !='') ? sanitize_text_field(get_option('map_filter_width')) : 500 ,
-        'h' => (get_option('map_filter_height') !='') ? sanitize_text_field(get_option('map_filter_height')) : 500,
-        'maptype' => (get_option('map_filter_maptype') !='') ? sanitize_text_field(get_option('map_filter_maptype')): 'ROADMAP',
+        'z' => (get_option('mf_map_filter_zoom') !='') ? sanitize_text_field(get_option('mf_map_filter_zoom')) : 16 ,
+        'w' => (get_option('mf_map_filter_width') !='') ? sanitize_text_field(get_option('mf_map_filter_width')) : 500 ,
+        'h' => (get_option('mf_map_filter_height') !='') ? sanitize_text_field(get_option('mf_map_filter_height')) : 500,
+        'maptype' => (get_option('mf_map_filter_maptype') !='') ? sanitize_text_field(get_option('mf_map_filter_maptype')): 'ROADMAP',
 		 'hide_filter' => '0',
         'marker' => ''
             ), $short_attribute);
@@ -46,7 +46,7 @@ function map_filter_build_map($short_attribute) {
 		if($short_attribute['hide_filter'] == 0){
 				// dropdown categories
 				$front_cats = wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'show_option_all'    => 'All','taxonomy'=>'map_category'));
-				$front_cats = str_replace('id=', 'onchange="filterMarkers(this.value)" id=', $front_cats);
+				$front_cats = str_replace('id=', 'onchange="mf_map_filter_filter_markers(this.value)" id=', $front_cats);
 		   
 				$generateScript = '  '.$front_cats.' ';
 			
@@ -147,7 +147,7 @@ function map_filter_build_map($short_attribute) {
             });
     ';
     $generateScript .= '
-		filterMarkers = function (category) {
+		mf_map_filter_filter_markers = function (category) {
 		for (i = 0; i < locations.length; i++) {
 		
         marker1 = gmarkers[i];
@@ -180,31 +180,31 @@ function map_filter_build_map($short_attribute) {
     <?php
 }
 
-add_shortcode('map_filter', 'map_filter_build_map');
+add_shortcode('map_filter', 'mf_map_filter_build_map');
 
 // loading js files 
-function map_filter_load_scripts() {
+function mf_map_filter_load_scripts() {
     wp_enqueue_script('slider-validation-js', plugins_url('js/validation.js', __FILE__));
     //wordpress nonce check
     if (isset($_POST['map_form_nonce_field']) && wp_verify_nonce($_POST['map_form_nonce_field'], 'map_form_action')) {
         // process form data
-        map_filter_post_map_form();
+        mf_map_filter_post_map_form();
     }
     //wordpress nonce check
     if (isset($_POST['map_del_nonce_field']) && wp_verify_nonce($_POST['map_del_nonce_field'], 'map_del_action')) {
         // process form data
-        map_filter_delete_map();
+        mf_map_filter_delete_map();
     }
 }
 
-add_action('admin_init', 'map_filter_load_scripts');
+add_action('admin_init', 'mf_map_filter_load_scripts');
 
 //custom PHP function
-function map_filter_in_arrayi($needle, $haystack) {
+function mf_map_filter_in_arrayi($needle, $haystack) {
     return in_array(strtolower($needle), array_map('strtolower', $haystack));
 }
 
-function map_filter_post_map_form() {
+function mf_map_filter_post_map_form() {
 
     // Validate user role/permissions
     if (!current_user_can('manage_options')) {
@@ -224,7 +224,7 @@ function map_filter_post_map_form() {
     }
 }
 
-function map_filter_delete_map() {
+function mf_map_filter_delete_map() {
     // only if numeric values 
     // Validate user role/permissions
     if (!current_user_can('manage_options')) {
@@ -235,30 +235,30 @@ function map_filter_delete_map() {
         $id = $_REQUEST['deleteval'];
         if (!isset($wpdb))
             $wpdb = $GLOBALS['wpdb'];
-        $map_filter_table_name = $wpdb->prefix . 'multiple_map_markers_data';
-        $wpdb->query("DELETE FROM $map_filter_table_name WHERE ID = $id ");
+        $mf_map_filter_table_name = $wpdb->prefix . 'multiple_map_markers_data';
+        $wpdb->query("DELETE FROM $mf_map_filter_table_name WHERE ID = $id ");
     }
 }
 
-function map_filter_admin_menu() {
+function mf_map_filter_admin_menu() {
 
-    add_menu_page('Map Markers', 'Map Markers', 'manage_options', 'map-markers', 'map_filter_menu_plugin_options');
+    add_menu_page('Map Markers', 'Map Markers', 'manage_options', 'map-markers', 'mf_map_filter_menu_plugin_options');
 }
 
 //
-add_action('admin_menu', 'map_filter_admin_menu');
+add_action('admin_menu', 'mf_map_filter_admin_menu');
 
 //
 
-function map_filter_add_submenu_page() {
+function mf_map_filter_add_submenu_page() {
     add_submenu_page(
-            'map-markers', 'New Marker', 'New Marker', 'manage_options', 'addnew_marker', 'map_filter_add_options_function'
+            'map-markers', 'New Marker', 'New Marker', 'manage_options', 'addnew_marker', 'mf_map_filter_add_options_function'
     );
 }
 
-add_action('admin_menu', 'map_filter_add_submenu_page');
+add_action('admin_menu', 'mf_map_filter_add_submenu_page');
 
-function map_filter_add_options_function() {
+function mf_map_filter_add_options_function() {
 
     // Validate user role/permissions
     if (!current_user_can('manage_options')) {
@@ -318,7 +318,7 @@ function map_filter_add_options_function() {
 }
 
 // display map list 
-function map_filter_menu_plugin_options() {
+function mf_map_filter_menu_plugin_options() {
     $cat_string = '';
     if (!isset($wpdb))
         $wpdb = $GLOBALS['wpdb'];
@@ -377,7 +377,7 @@ function map_filter_menu_plugin_options() {
                 // WordPress nonce field
                 wp_nonce_field('map_del_action', 'map_del_nonce_field');
                 ?>
-                <a href="javascript:;"onclick="javascript:confirm('Do you really want to delete') ? validate(event, <?php echo $map->id; ?>) : 0"  /><?php echo esc_html('Delete'); ?> </a>
+                <a href="javascript:;"onclick="javascript:confirm('Do you really want to delete') ? mf_validate(event, <?php echo $map->id; ?>) : 0"  /><?php echo esc_html('Delete'); ?> </a>
                 <input type="hidden" name="deleteval" id="deleteval" value="<?php echo esc_html($map->id); ?>" />
             </form>
         </th>
@@ -399,13 +399,13 @@ function map_filter_menu_plugin_options() {
  * 
  */
 
-function map_filter_plugin_options_install() {
+function mf_map_filter_plugin_options_install() {
     if (!isset($wpdb))
         $wpdb = $GLOBALS['wpdb'];
-    $map_filter_table_name = $wpdb->prefix . 'multiple_map_markers_data';
+    $mf_map_filter_table_name = $wpdb->prefix . 'multiple_map_markers_data';
 
-    if ($wpdb->get_var("show tables like '$map_filter_table_name'") != $map_filter_table_name) {
-        $sql = "CREATE TABLE " . $map_filter_table_name . " (
+    if ($wpdb->get_var("show tables like '$mf_map_filter_table_name'") != $mf_map_filter_table_name) {
+        $sql = "CREATE TABLE " . $mf_map_filter_table_name . " (
 		id INT NOT NULL AUTO_INCREMENT,
 		lattitude double NOT NULL,
 		title text,
@@ -422,15 +422,15 @@ function map_filter_plugin_options_install() {
     }
 }
 
-register_activation_hook(__FILE__, 'map_filter_plugin_options_install');
+register_activation_hook(__FILE__, 'mf_map_filter_plugin_options_install');
 
 // Plugin deactivation hook
-function map_filter_hook_uninstall() {
+function mf_map_filter_hook_uninstall() {
     if (!isset($wpdb))
      $wpdb = $GLOBALS['wpdb'];
-    $map_filter_table_name = $wpdb->prefix . 'multiple_map_markers_data';
-    $wpdb->query("DROP TABLE IF EXISTS $map_filter_table_name");
+    $mf_map_filter_table_name = $wpdb->prefix . 'multiple_map_markers_data';
+    $wpdb->query("DROP TABLE IF EXISTS $mf_map_filter_table_name");
 }
 
-register_uninstall_hook(__FILE__, 'map_filter_hook_uninstall');
+register_uninstall_hook(__FILE__, 'mf_map_filter_hook_uninstall');
 ?>
